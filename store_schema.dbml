@@ -1,7 +1,7 @@
-// managers are the main users
-Table managers {
-    manager_id integer [PK]
-    username varchar
+// stores are the main users
+Table stores {
+    store_id integer [PK]
+    store_name varchar
     password varchar
 }
 
@@ -22,10 +22,10 @@ Table categories {
     name varchar
 }
 
-// each of these entities are tied to the manager
+// each of these entities are tied to the store
 Table customers {
-    manager_id integer
     customer_id integer [PK]
+    store_id integer
     first_name varchar
     last_name varchar
     region_id integer
@@ -33,14 +33,11 @@ Table customers {
 }
 
 Table products {
-    manager_id integer
     product_id integer [PK]
     subcategory_id integer
     product_name varchar
     cost_price decimal[10,2]
     selling_price decimal[10,2]
-    added_date date
-    active boolean [default: true]
 }
 
 Table order_items {
@@ -56,22 +53,24 @@ Table orders {
     order_date date
 }
 
-Table restock {
-    restock_id integer [PK]
+Table stock {
+    stock_id integer [PK]
+    store_id integer
     product_id integer
     quantity integer
-    restock_date date
+    stock_date date
+    discontinued_date date [null]
 }
 
-Ref: managers.manager_id < products.manager_id
+Ref: stores.store_id < stock.store_id
 
 Ref: subcategories.category_id > categories.category_id
 
 Ref: subcategories.subcategory_id < products.subcategory_id
 
-Ref: managers.manager_id < customers.manager_id
+Ref: stores.store_id < customers.store_id
 
-Ref: products.product_id < restock.product_id
+Ref: products.product_id < stock.product_id
 
 Ref: products.product_id < order_items.product_id
 
