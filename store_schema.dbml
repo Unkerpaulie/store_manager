@@ -1,0 +1,82 @@
+// managers are the main users
+Table managers {
+    manager_id integer [PK]
+    username varchar
+    password varchar
+}
+
+// reference tables
+Table regions {
+    region_id integer [PK]
+    region_name varchar 
+}
+
+Table subcategories {
+    subcategory_id integer [PK]
+    name varchar
+    category_id integer
+}
+
+Table categories {
+    category_id integer [PK]
+    name varchar
+}
+
+// each of these entities are tied to the manager
+Table customers {
+    manager_id integer
+    customer_id integer [PK]
+    first_name varchar
+    last_name varchar
+    region_id integer
+    created_date date 
+}
+
+Table products {
+    manager_id integer
+    product_id integer [PK]
+    subcategory_id integer
+    product_name varchar
+    cost_price decimal[10,2]
+    selling_price decimal[10,2]
+    added_date date
+    active boolean [default: true]
+}
+
+Table order_items {
+    order_item_id integer [PK]
+    order_id integer
+    product_id integer
+    quantity integer
+}
+
+Table orders {
+    order_id integer [PK]
+    customer_id integer
+    order_date date
+}
+
+Table restock {
+    restock_id integer [PK]
+    product_id integer
+    quantity integer
+    restock_date date
+}
+
+Ref: managers.manager_id < products.manager_id
+
+Ref: subcategories.category_id > categories.category_id
+
+Ref: subcategories.subcategory_id < products.subcategory_id
+
+Ref: managers.manager_id < customers.manager_id
+
+Ref: products.product_id < restock.product_id
+
+Ref: products.product_id < order_items.product_id
+
+Ref: customers.customer_id < orders.customer_id
+
+Ref: orders.order_id < order_items.order_id
+
+Ref: regions.region_id < customers.region_id
