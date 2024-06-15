@@ -2,7 +2,7 @@
 Table stores {
     store_id integer [PK]
     store_name varchar
-    password varchar
+    owner varchar
 }
 
 // reference tables
@@ -22,6 +22,14 @@ Table categories {
     name varchar
 }
 
+Table products {
+    product_id integer [PK]
+    subcategory_id integer
+    product_name varchar
+    cost_price decimal[10,2]
+    selling_price decimal[10,2]
+}
+
 // each of these entities are tied to the store
 Table customers {
     customer_id integer [PK]
@@ -32,12 +40,13 @@ Table customers {
     created_date date 
 }
 
-Table products {
-    product_id integer [PK]
-    subcategory_id integer
-    product_name varchar
-    cost_price decimal[10,2]
-    selling_price decimal[10,2]
+Table stock {
+    stock_id integer [PK]
+    store_id integer
+    product_id integer
+    quantity integer
+    stock_date date
+    discontinued_date date [null]
 }
 
 Table order_items {
@@ -53,14 +62,6 @@ Table orders {
     order_date date
 }
 
-Table stock {
-    stock_id integer [PK]
-    store_id integer
-    product_id integer
-    quantity integer
-    stock_date date
-    discontinued_date date [null]
-}
 
 Ref: stores.store_id < stock.store_id
 
