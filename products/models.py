@@ -1,6 +1,5 @@
 from django.db import models
 from store.models import Store
-from random import uniform
 
 
 class Category(models.Model):
@@ -16,12 +15,7 @@ class Product(models.Model):
     subcategory = models.ForeignKey(Subcategory, on_delete=models.CASCADE)
     product_name = models.CharField(max_length=50)
     selling_price = models.DecimalField(max_digits=10, decimal_places=2)
-    # cost price will be randomly calculated to be between 3 and 8% lower than selling price
     cost_price = models.DecimalField(max_digits=10, decimal_places=2)
-
-    def save(self, *args, **kwargs):
-        self.cost_price = round(self.selling_price * (1 - uniform(0.03, 0.08)), 2)
-        super().save(*args, **kwargs)
 
 
 class Stock(models.Model):
