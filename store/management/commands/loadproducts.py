@@ -23,6 +23,7 @@ class Command(BaseCommand):
             columns = ', '.join(column_names)
             placeholders = ', '.join(['?'] * len(column_names))
             insert_query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+            print(insert_query)
             cursor.executemany(insert_query, values)
             connection.commit()
 
