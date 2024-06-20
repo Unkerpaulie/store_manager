@@ -29,11 +29,13 @@ A possible issue is generating historical data. Perhaps the best approach is tha
 
 ## setup
 
-`pip install django`
+`pip install django pandas`
 
 In the project directory
 
 `python manage.py migrate`
+
+`python manage.py loadproducts`
 
 `python manage.py runserver`
 
