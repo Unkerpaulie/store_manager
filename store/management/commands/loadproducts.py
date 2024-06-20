@@ -5,40 +5,39 @@ import sqlite3
 from random import uniform
 
 
+def insert_into_table(table_name, column_names, values):
+    db_path = settings.BASE_DIR / 'db.sqlite3'
+
+    try:
+        # Connect to the SQLite3 database
+        connection = sqlite3.connect(db_path)
+        cursor = connection.cursor()
+
+        # clear the table if data exists
+        qry = f"DELETE FROM {table_name}"
+        cursor.execute(qry)
+        connection.commit()
+
+        # insert
+        columns = ', '.join(column_names)
+        placeholders = ', '.join(['?'] * len(column_names))
+        insert_query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+        cursor.executemany(insert_query, values)
+        connection.commit()
+
+        print(f"{cursor.rowcount} rows were inserted into {table_name}.")
+
+    except sqlite3.Error as e:
+        print(f"Error: {e}")
+        print("Make sure you run `python manage.py migrate` first")
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+            print("SQLite connection is closed")
+
+
 class Command(BaseCommand):
-    def insert_into_table(table_name, column_names, values, db_path):
-        db_path = settings.BASE_DIR / 'db.sqlite3'
-
-        try:
-            # Connect to the SQLite3 database
-            connection = sqlite3.connect(db_path)
-            cursor = connection.cursor()
-
-            # clear the table if data exists
-            qry = "delete from products_subcategory"
-            cursor.execute(qry)
-            connection.commit()
-
-            # insert
-            columns = ', '.join(column_names)
-            placeholders = ', '.join(['?'] * len(column_names))
-            insert_query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
-            print(insert_query)
-            cursor.executemany(insert_query, values)
-            connection.commit()
-
-            print(f"{cursor.rowcount} rows were inserted into {table_name}.")
-
-        except sqlite3.Error as e:
-            print(f"Error: {e}")
-            print("Make sure you run `python manage.py migrate` first")
-        finally:
-            if connection:
-                cursor.close()
-                connection.close()
-                print("SQLite connection is closed")
-
-
     def handle(self, *args, **options):
         # get product data
         datafile = settings.BASE_DIR / "products.csv"
@@ -64,11 +63,9 @@ class Command(BaseCommand):
         products["price"] = products["price"].astype(float)
         products["cost_price"] = round(products["price"].apply(lambda x: x * (1 - uniform(0.03, 0.08))), 2)
         # insert data into database
-        self.insert_into_table("customers_region", ["region_name"], [["East"], ["West"], ["North"], ["South"], ["Central"]])
-        self.insert_into_table("products_category", ["category_name", "id"], categories.values.tolist())
-        self.insert_into_table("products_subcategory", ["subcategory_name", "category_id", "id"], subcategories.values.tolist())
-        self.insert_into_table("products_product", ["product_name", "selling_price", "subcategory_id", "id", "cost_price"], products.values.tolist())
-
-        print("Data successfully loaded")
+        insert_into_table("customers_region", ["region_name"], [["East"], ["West"], ["North"], ["South"], ["Central"]])
+        insert_into_table("products_category", ["category_name", "id"], categories.values.tolist())
+        insert_into_table("products_subcategory", ["subcategory_name", "category_id", "id"], subcategories.values.tolist())
+        insert_into_table("products_product", ["product_name", "selling_price", "subcategory_id", "id", "cost_price"], products.values.tolist())
 
 
