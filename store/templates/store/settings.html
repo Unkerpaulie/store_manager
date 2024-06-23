@@ -1,0 +1,46 @@
+{% extends "store/base.html" %}
+
+{% block main %}
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div class="card mt-5" data-bs-theme="auto">
+            <div class="card-header"></div>
+            <div class="card-body">
+                <h4 class="card-title p-2">Store Settings</h4>
+                <form action="" method="post">
+                    {% csrf_token %}
+            
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="description">Store Name</label>
+                        <input type="text" name="description" class="form-control form-control-sm" value="{{ form_data.description }}">
+                    </div>
+                    
+                    <div class="row">
+                        <div class="form-group mt-3 col-md-4">
+                            <label class="form-label" for="amount">Max Daily Customers</label>
+                            <input type="number" name="amount" class="form-control" value="{{ form_data.amount }}" step="0.01" />
+                        </div>
+                        
+                        <div class="form-group mt-3 col-md-5">
+                            <label class="form-label" for="amount">Starting Loan Amount</label>
+                            <input type="number" name="amount" class="form-control" value="{{ form_data.amount }}" step="0.01" />
+                        </div>
+                        
+                        <div class="form-group mt-3 col-md-3">
+                            <label class="form-label" for="date">Opening Date</label>
+                            <input type="date" name="date" class="form-control form-control-sm" value="{{ form_data.date }}">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mt-3 d-flex justify-content-evenly">
+                        <a href="{% url "store:home" %}" class="btn btn-secondary mt-3">Cancel</a>
+                        <button type="submit" id="submit" class="btn btn-primary mt-3">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <div class="col-md-2"></div>
+</div>
+
+{% endblock main %}
